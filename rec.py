@@ -12,7 +12,7 @@ def rec_fun():
     CHANNELS = 1
     RATE = 16000
     RECORD_SECONDS = 5
-    WAVE_OUTPUT_FILENAME = "command.wav"
+    WAVE_OUTPUT_FILENAME = "./temp/command.wav"
     p = pyaudio.PyAudio()
     stream = p.open(format=FORMAT,
                     channels=1,

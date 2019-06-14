@@ -17,7 +17,7 @@ def say(word):
 })
 
     if not isinstance(result, dict):
-        with open('./reply.mp3', 'wb') as f:
+        with open('./temp/reply.mp3', 'wb') as f:
             f.write(result)
         f.close()
-        os.system('play ./reply.mp3')
+        os.system('play ./temp/reply.mp3')

@@ -13,7 +13,7 @@ def get_file_content(filePath):
 
 
 def stt():
-    result = client.asr(get_file_content('./command.wav'),
+    result = client.asr(get_file_content('./temp/command.wav'),
                         'wav',
                         16000,
                         {'dev_pid': 1536, }
@@ -27,12 +27,12 @@ def stt():
             print("I am really in")
             if word[len(word) - 3:len(word)] == '，':
                 word[0:len(word) - 3]
-                with open('./command.txt', 'wb') as f:
+                with open('./temp/command.txt', 'wb') as f:
                     f.write(word[0:len(word) - 3])
                 f.close()
             else:
                 print(word.decode('utf-8').encode('gbk'))
-                with open('./command.txt', 'wb') as f:
+                with open('./temp/command.txt', 'wb') as f:
                     f.write(word)
                 f.close()
         else:
