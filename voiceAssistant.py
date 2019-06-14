@@ -2,6 +2,7 @@ import snowboydecoder
 import sys
 import signal
 
+import os
 import datetime
 import time
 import threading
@@ -11,11 +12,13 @@ import speak_api
 import weather
 import turing
 import settedAnswer
+import netCheck
 
 # Demo code for listening to two hotwords at the same time
 
 isWork = False
 interrupted = False
+netStatus=True
 
 preTime = datetime.datetime.now()
 curTime = datetime.datetime.now()
@@ -23,6 +26,12 @@ curTime = datetime.datetime.now()
 confidenceLevel = 0
 confidence = [0, 0.1, 0.2, 0.3, 0, 4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
 
+class checkNet (threading.Thread):
+    def run(self):
+        global netStatus
+        while True:
+            netStatus=netCheck.ping_netCheck()
+            time.sleep(1)
 
 class myThread (threading.Thread):
     def __init__(self, threadID, name, counter):
@@ -68,14 +77,18 @@ def changeConfidence():
 
 def start():
     global isWork
+    global netStatus
     if not isWork:
-        isWork = True
-        print('called')
-        m = myThread(1, 'Hello', 1)
-        m.setDaemon(True)
-        threads.append(m)
-        snowboydecoder.play_audio_file(snowboydecoder.DETECT_DING)
-        m.start()
+        if netStatus:
+            isWork = True
+            print('called')
+            m = myThread(1, 'Hello', 1)
+            m.setDaemon(True)
+            threads.append(m)
+            os.system('play ./resources/ding.wav')
+            m.start()
+        else:
+            os.system('play ./resources/netError.mp3')
 
 
 def stop():
@@ -127,6 +140,9 @@ if len(sys.argv) != 3:
 
 threads = []
 models = sys.argv[1:]
+
+monitorNet= checkNet()
+monitorNet.start()
 
 # capture SIGINT signal, e.g., Ctrl+C
 signal.signal(signal.SIGINT, signal_handler)
