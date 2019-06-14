@@ -9,7 +9,6 @@ from scipy import fftpack
 def rec_fun():
     print('I am Schrodinger‘s cat!')
 
-    threshold=7000
     # os.close(sys.stderr.fileno())
     CHUNK = 1024
     FORMAT = pyaudio.paInt16
@@ -34,6 +33,7 @@ def rec_fun():
     
     stopflag = 0
     stopflag2 = 0
+    threshold=3000
     while True:
         data = stream.read(CHUNK)
         rt_data = np.frombuffer(data, np.dtype('<i2'))
@@ -45,12 +45,12 @@ def rec_fun():
         # 测试阈值，输出值用来判断阈值
         print('mic: ',sum(fft_data) // len(fft_data))
 
-        # 判断麦克风是否停止，判断说话是否结束，# 麦克风阈值，默认7000
+        # 判断麦克风是否停止，判断说话是否结束，# 麦克风阈值
         if sum(fft_data) // len(fft_data) > threshold:
             stopflag += 1
         else:
             stopflag2 += 1
-        oneSecond=int(RATE / CHUNK)
+        oneSecond=int(RATE / CHUNK) # 一秒内块的数量
         if stopflag2 + stopflag > oneSecond * 1.5:  # 主要是唤醒后是否长时间未说话
             if stopflag2 > oneSecond:
                 break

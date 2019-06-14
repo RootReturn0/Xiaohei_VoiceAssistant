@@ -18,6 +18,7 @@ import netCheck
 
 isWork = False
 interrupted = False
+isShutUp=False
 netStatus=True
 
 preTime = datetime.datetime.now()
@@ -96,6 +97,15 @@ def stop():
     isWork = False
 
 
+def shutUp():
+    global isShutUp
+    if not isShutUp:
+        isShutUp=True
+        os.system('^C')
+        speak_api.say('好的')
+        isShutUp=False
+
+
 def cancel():
     stop()
     speak_api.say('好的')
@@ -133,9 +143,9 @@ def interrupt_callback():
     return interrupted
 
 
-if len(sys.argv) != 3:
-    print("Error: need to specify 2 model names")
-    print("Usage: python demo.py 1st.model 2nd.model")
+if len(sys.argv) != 4:
+    print("Error: need to specify 3 model names")
+    print("Usage: python voiceAssistant.py 1st.model 2nd.model 3rd.model")
     sys.exit(-1)
 
 threads = []
@@ -150,7 +160,8 @@ signal.signal(signal.SIGINT, signal_handler)
 sensitivity = [0.5]*len(models)
 detector = snowboydecoder.HotwordDetector(models, sensitivity=sensitivity)
 callbacks = [lambda: start(),
-             lambda: cancel()]
+             lambda: cancel(),
+             lambda: shutUp()]
 print('Listening... Press Ctrl+C to exit')
 
 # main loop
