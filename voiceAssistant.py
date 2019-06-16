@@ -79,6 +79,8 @@ def changeConfidence():
         if confidenceLevel > 0:
             confidenceLevel -= 1
 
+    preTime=curTime
+
 
 def start():
     global isWork

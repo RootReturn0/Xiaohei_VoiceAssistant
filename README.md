@@ -10,11 +10,19 @@ This project is to make a voice assistant whose name is Xiaohei for your own, wh
 
 `python3 voiceAssistant.py hixiaohei.pmdl xiaoheibizui.pmdl xiaoheiquxiao.pmdl`
 
-After you hear the sound "Dong", you can start to talk with Xiaohei.
+The sound "Dong" means Xiaohei is ready, you can start to talk with Xiaohei.. 
 
-* Xiaohei can translate the English word you said. *You should say and only say one single English word!*
-* Xiaohei can tell you some information when you say "搜索xxx". The key word for search is the content you said after saying "搜索".
-* Xiaohei can chat with you whatever you say to it.
+### Hotword
+
+* You should say "嘿小黑"*(hei xiao hei)* to wake Xiaohei up everytime you would like to say something to it. After you hear the sound "Ding", Xiaohei will be awake.
+* You can say "小黑闭嘴"*(xiao hei bi zui)* to make Xiaohei shut up.
+* You can say "小黑取消"*(xiao hei qu xiao)* to cancel the task you ask Xiaohei to do, such as search.
+
+### What Xiaohei can do
+
+* Translate the English word you said. *You should say and only say one single English word!*
+* Tell you some information when you say "搜索xxx". The key word for search is the content you said after saying "搜索".
+* Chat with you whatever you say to it.
 
 
 ## Dependencies
