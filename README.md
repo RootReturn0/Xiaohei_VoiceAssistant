@@ -1,8 +1,8 @@
 # Voice Assistant
 
-*This project only support Chinese for now.*
+*Only support Chinese for now.*
 
-**This project does not support Windows platform!**
+**Does not support Windows platform!**
 
 This project is to make a voice assistant whose name is Xiaohei for your own, which can chat and search some knowledge in Baidu Baike .
 
