@@ -46,7 +46,7 @@ def numtozh(num):
 
 def moji():
     res = requests.get('https://tianqi.moji.com/weather/china/shanghai/shanghai', headers=headers)
-    # 用BeautifulSoup获取所需信息
+    # use BeautifulSoup to get info
     soup = BeautifulSoup(res.text, "html.parser")
     temp = soup.find('div', attrs={'class': 'wea_weather clearfix'}).em.getText()
     temp = numtozh(int(temp))

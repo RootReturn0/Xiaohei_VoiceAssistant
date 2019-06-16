@@ -11,7 +11,7 @@ headers = {
 def baidu(key):
     res = requests.get('https://baike.baidu.com/item/'+str(key), headers=headers)
     res.encoding = 'utf-8'
-    # 用BeautifulSoup获取所需信息
+    # get info by BeautifulSoup
     soup = BeautifulSoup(res.text, "html.parser")
     try:
         temp = soup.find('div', attrs={'class': 'lemma-summary'}).find('div', attrs={'class': 'para'}).getText()

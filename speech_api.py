@@ -36,7 +36,7 @@ def stt():
                     f.write(word)
                 f.close()
         else:
-            print("音频文件不存在或格式错误")
+            print("File does not exist or wrong format!")
 
         return result['result'][0]
     else:

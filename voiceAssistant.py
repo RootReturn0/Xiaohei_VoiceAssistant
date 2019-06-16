@@ -16,7 +16,6 @@ import netCheck
 import baike
 import kill
 
-# Demo code for listening to two hotwords at the same time
 
 isWork = False
 interrupted = False
@@ -30,6 +29,11 @@ confidenceLevel = 0
 confidence = [0, 0.1, 0.2, 0.3, 0, 4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
 
 
+def checkWork():
+    global isWork
+    return isWork
+
+# check the connection of Internet
 class checkNet (threading.Thread):
     def run(self):
         global netStatus
@@ -37,7 +41,7 @@ class checkNet (threading.Thread):
             netStatus = netCheck.ping_netCheck()
             time.sleep(1)
 
-
+# Work after being waked
 class myThread (threading.Thread):
     def __init__(self, threadID, name, counter):
         threading.Thread.__init__(self)
@@ -46,7 +50,7 @@ class myThread (threading.Thread):
         self.counter = counter
 
     def run(self):
-        print("开始线程：" + self.name)
+        print("Start thread：" + self.name)
         if not checkWork():
             print('out!')
             return
@@ -61,9 +65,11 @@ class myThread (threading.Thread):
             return
         talk(result)
         stop()
-        print("退出线程：" + self.name)
+        print("Exit thread：" + self.name)
 
 
+# Change confidence level for Turing Robot.
+# Chat more in a short time, it will be more confident.
 def changeConfidence():
     global preTime
     global curTime
@@ -79,9 +85,9 @@ def changeConfidence():
         if confidenceLevel > 0:
             confidenceLevel -= 1
 
-    preTime=curTime
+    preTime = curTime
 
-
+# wake up
 def start():
     global isWork
     global netStatus
@@ -97,13 +103,13 @@ def start():
         else:
             os.system('play ./resources/netError.mp3')
 
-
+# stop working of current conversation
 def stop():
     global isWork
     isWork = False
     kill.killSox()
 
-
+# shut up
 def shutUp(b):
     global isShutUp
     global confidenceLevel
@@ -116,12 +122,7 @@ def shutUp(b):
             confidence -= 1
         isShutUp = False
 
-
-def checkWork():
-    global isWork
-    return isWork
-
-
+# decide what to say
 def talk(word):
     print(word)
     reply = settedAnswer.getAnswer(word)
