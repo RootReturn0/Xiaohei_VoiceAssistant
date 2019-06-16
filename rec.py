@@ -33,7 +33,7 @@ def rec_fun():
     
     stopflag = 0
     stopflag2 = 0
-    threshold=3000
+    threshold=5000
     while True:
         data = stream.read(CHUNK)
         rt_data = np.frombuffer(data, np.dtype('<i2'))

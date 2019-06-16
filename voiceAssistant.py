@@ -13,13 +13,15 @@ import weather
 import turing
 import settedAnswer
 import netCheck
+import baike
+import kill
 
 # Demo code for listening to two hotwords at the same time
 
 isWork = False
 interrupted = False
-isShutUp=False
-netStatus=True
+isShutUp = False
+netStatus = True
 
 preTime = datetime.datetime.now()
 curTime = datetime.datetime.now()
@@ -27,12 +29,14 @@ curTime = datetime.datetime.now()
 confidenceLevel = 0
 confidence = [0, 0.1, 0.2, 0.3, 0, 4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
 
+
 class checkNet (threading.Thread):
     def run(self):
         global netStatus
         while True:
-            netStatus=netCheck.ping_netCheck()
+            netStatus = netCheck.ping_netCheck()
             time.sleep(1)
+
 
 class myThread (threading.Thread):
     def __init__(self, threadID, name, counter):
@@ -66,9 +70,9 @@ def changeConfidence():
     global confidenceLevel
 
     if abs(curTime.minute-preTime.minute) <= 1 \
-        and curTime.day == preTime.day \
-        and curTime.month == preTime.month \
-        and curTime.year == preTime.year:
+            and curTime.day == preTime.day \
+            and curTime.month == preTime.month \
+            and curTime.year == preTime.year:
         if confidenceLevel < 10:
             confidenceLevel += 1
     else:
@@ -95,20 +99,20 @@ def start():
 def stop():
     global isWork
     isWork = False
+    kill.killSox()
 
 
-def shutUp():
+def shutUp(b):
     global isShutUp
+    global confidenceLevel
+
     if not isShutUp:
-        isShutUp=True
-        os.system('^C')
-        speak_api.say('好的')
-        isShutUp=False
-
-
-def cancel():
-    stop()
-    speak_api.say('好的')
+        isShutUp = True
+        stop()
+        os.system('play ./resources/ok.mp3')
+        if b and confidenceLevel > 0:
+            confidence -= 1
+        isShutUp = False
 
 
 def checkWork():
@@ -118,15 +122,18 @@ def checkWork():
 
 def talk(word):
     print(word)
-    reply=settedAnswer.getAnswer(word)
+    reply = settedAnswer.getAnswer(word)
     if not reply == '':
+        speak_api.say(reply)
+    elif '搜索' in word:
+        reply = baike.get(word)
         speak_api.say(reply)
     elif '今天天气' in word:
         reply = weather.moji()
         speak_api.say(reply)
     else:
         global curTime
-        curTime=datetime.datetime.now()
+        curTime = datetime.datetime.now()
         changeConfidence()
         eg_question = {'text': word, 'confidence': confidence[confidenceLevel]}
         reply = turing.chat(eg_question)
@@ -151,7 +158,7 @@ if len(sys.argv) != 4:
 threads = []
 models = sys.argv[1:]
 
-monitorNet= checkNet()
+monitorNet = checkNet()
 monitorNet.start()
 
 # capture SIGINT signal, e.g., Ctrl+C
@@ -160,8 +167,8 @@ signal.signal(signal.SIGINT, signal_handler)
 sensitivity = [0.5]*len(models)
 detector = snowboydecoder.HotwordDetector(models, sensitivity=sensitivity)
 callbacks = [lambda: start(),
-             lambda: cancel(),
-             lambda: shutUp()]
+             lambda: shutUp(False),
+             lambda: shutUp(True)]
 print('Listening... Press Ctrl+C to exit')
 
 # main loop
