@@ -169,6 +169,8 @@ detector = snowboydecoder.HotwordDetector(models, sensitivity=sensitivity)
 callbacks = [lambda: start(),
              lambda: shutUp(False),
              lambda: shutUp(True)]
+
+os.system('play ./resources/dong.wav')
 print('Listening... Press Ctrl+C to exit')
 
 # main loop
