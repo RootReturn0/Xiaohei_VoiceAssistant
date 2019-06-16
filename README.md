@@ -63,7 +63,7 @@ go to [snowboy](https://github.com/Kitt-AI/snowboy) by KITT.AI for detail
 
 `pip3 install pyaudio`
 
-If you want to run the project in Raspberry Pi, you'd better set `exception_on_overflow=False` in function `read` of `pyaudio.py` for improved performance, especially on slower platforms. The location is: 
+You'd better set `exception_on_overflow=False` in function `read` of `pyaudio.py` for improved performance, especially on slower platforms. The location is: 
 
 ```python
 def read(self, num_frames, exception_on_overflow=True):
