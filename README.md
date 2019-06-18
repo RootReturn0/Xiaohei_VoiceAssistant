@@ -10,7 +10,7 @@ This project is to make a voice assistant whose name is Xiaohei for your own, wh
 
 `python3 voiceAssistant.py hixiaohei.pmdl xiaoheibizui.pmdl xiaoheiquxiao.pmdl`
 
-The sound "Dong" means Xiaohei is ready, you can start to talk with Xiaohei.. 
+The sound "Dong" means Xiaohei is ready, you can start to talk with Xiaohei.
 
 ### Hotword
 

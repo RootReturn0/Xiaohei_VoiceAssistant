@@ -32,4 +32,4 @@ def get(word):
     return baidu(key)
 
 if __name__ == '__main__':
-    get('我要搜索白居易')
+    get('我要搜索忆江南')
