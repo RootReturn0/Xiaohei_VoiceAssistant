@@ -51,6 +51,16 @@ The sound "Dong" means Xiaohei is ready, you can start to talk with Xiaohei.
 
 `sudo apt-get install portaudio-dev`
 
+### pulseaudio
+
+#### macOS
+
+`brew install pulseaudio`
+
+#### Linux(Debian)
+
+`sudo apt-get install pulseaudio`
+
 ### snowboy
 
 go to [snowboy](https://github.com/Kitt-AI/snowboy) by KITT.AI for detail
