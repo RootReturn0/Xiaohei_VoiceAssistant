@@ -19,16 +19,18 @@ def baidu(key):
         if '[' in temp:
             result = re.findall(r"\[(.*)\]",temp)
             for i in result:
-                temp=temp.replace('['+i+']','')     
+                temp=temp.replace('['+i+']','')    
         temp=temp.replace('\n','')
-    except:
+    except (IOError ,ZeroDivisionError) as e:
+        print(e)
         return('未找到结果')
     print(temp)
     return temp
 
 def get(word):
     key=re.search(r'搜索.*',word).group(0)
-    key=key[2:]
+    key=key[2:].replace('。','')
+    print(key,'?')
     return baidu(key)
 
 if __name__ == '__main__':

@@ -35,26 +35,6 @@ def checkWork():
     return isWork
 
 
-class Detector(object):
-    # Singleton
-    def __new__(cls, **kw):
-        if not hasattr(cls, '_inst'):
-            cls._inst = super(Detector, cls).__new__(cls)
-        return cls._inst
-
-    def __init__(self, **kw):
-        super().__init__()
-        for k, w in kw.items():
-            setattr(self, k, w)
-
-    def start(self):
-        self.detector.start(detected_callback=callbacks,
-                            interrupt_check=interrupt_callback,
-                            sleep_time=0.03)
-
-    def terminate(self):
-        self.detector.terminate()
-
 # check the connection of Internet
 
 
