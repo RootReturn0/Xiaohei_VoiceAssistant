@@ -1,8 +1,8 @@
 from aip import AipSpeech
 
-APP_ID = '16482077'
-API_KEY = 'CgmfcSPiM5YvNjEopovyU2wC'
-SECRET_KEY = 'nL5mTrD9djYP6qy0gkNSY0zRzR5M2O2g'
+APP_ID = '19634084'
+API_KEY = 'saX3jh5sr8OWs3skrQXDgPU9'
+SECRET_KEY = 'UPg6dGftbCKaQH10ZHMpaSQwOpAa2LOI'
 
 client = AipSpeech(APP_ID, API_KEY, SECRET_KEY)
 
@@ -16,7 +16,7 @@ def stt():
     result = client.asr(get_file_content('./temp/command.wav'),
                         'wav',
                         16000,
-                        {'dev_pid': 1536, }
+                        {'dev_pid': 1537, }
                         )
     print(result)
 

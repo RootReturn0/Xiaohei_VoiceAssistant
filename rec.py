@@ -31,32 +31,32 @@ def rec_fun():
     #         data = stream.read(CHUNK)
     #         frames.append(data)
     
-    stopflag = 0
-    stopflag2 = 0
+    startF = 0
+    endF = 0
     threshold=5000
     while True:
         data = stream.read(CHUNK)
-        rt_data = np.frombuffer(data, np.dtype('<i2'))
+        chunkData = np.frombuffer(data, np.dtype('<i2'))
         # print(rt_data*10)
         # Fast Fourier Transform
-        fft_temp_data = fftpack.fft(rt_data, rt_data.size, overwrite_x=True)
-        fft_data = np.abs(fft_temp_data)[0:fft_temp_data.size // 2 + 1]
+        fftTempData = fftpack.fft(chunkData, chunkData.size, overwrite_x=True)
+        fftData = np.abs(fftTempData)[0:fftTempData.size // 2 + 1]
 
         # test threshold to find a better one
-        print('mic: ',sum(fft_data) // len(fft_data))
+        print('mic: ',sum(fftData) // len(fftData))
 
         # check if the user stoped speaking by threshold
-        if sum(fft_data) // len(fft_data) > threshold:
-            stopflag += 1
+        if sum(fftData) // len(fftData) > threshold:
+            startF += 1
         else:
-            stopflag2 += 1
+            endF += 1
         oneSecond=int(RATE / CHUNK) # the number of chunks in one second
-        if stopflag2 + stopflag > oneSecond * 1.5:  # Say nothing after being waked up more than 1.5s
-            if stopflag2 > oneSecond:
+        if endF + startF > oneSecond * 1.5:  # Say nothing after being waked up more than 1.5s
+            if endF > oneSecond:  # Say nothing after saying somthing more than 1s
                 break
             else:
-                stopflag2 = 0
-                stopflag = 0
+                endF = 0
+                startF = 0
         frames.append(data)
 
     stream.stop_stream()

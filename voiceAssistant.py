@@ -28,21 +28,47 @@ curTime = datetime.datetime.now()
 confidenceLevel = 0
 confidence = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
 
+detector = ''
 
 def checkWork():
     global isWork
     return isWork
 
+
+class Detector(object):
+    # Singleton
+    def __new__(cls, **kw):
+        if not hasattr(cls, '_inst'):
+            cls._inst = super(Detector, cls).__new__(cls)
+        return cls._inst
+
+    def __init__(self, **kw):
+        super().__init__()
+        for k, w in kw.items():
+            setattr(self, k, w)
+
+    def start(self):
+        self.detector.start(detected_callback=callbacks,
+                            interrupt_check=interrupt_callback,
+                            sleep_time=0.03)
+
+    def terminate(self):
+        self.detector.terminate()
+
 # check the connection of Internet
+
+
 class checkNet (threading.Thread):
     def run(self):
-        global netStatus
         while True:
+            global netStatus
             netStatus = netCheck.ping_netCheck()
             time.sleep(1)
 
 # Work after being waked
-class myThread (threading.Thread):
+
+
+class workThread (threading.Thread):
     def __init__(self, threadID, name, counter):
         threading.Thread.__init__(self)
         self.threadID = threadID
@@ -54,7 +80,11 @@ class myThread (threading.Thread):
         if not checkWork():
             print('out!')
             return
+        global detector
+        detector.terminate()
         rec.rec_fun()
+        detector = detectorThread()
+        detector.start()
         threads.remove(self)
         if not checkWork():
             print('out!')
@@ -88,6 +118,8 @@ def changeConfidence():
     preTime = curTime
 
 # wake up
+
+
 def start():
     global isWork
     global netStatus
@@ -95,7 +127,7 @@ def start():
         if netStatus:
             isWork = True
             print('called')
-            m = myThread(1, 'Hello', 1)
+            m = workThread(1, 'Hello', 1)
             m.setDaemon(True)
             threads.append(m)
             os.system('play ./resources/ding.wav')
@@ -104,12 +136,16 @@ def start():
             os.system('play ./resources/netError.mp3')
 
 # stop working of current conversation
+
+
 def stop():
     global isWork
     isWork = False
     kill.killSox()
 
 # shut up
+
+
 def shutUp(b):
     global isShutUp
     global confidenceLevel
@@ -123,6 +159,8 @@ def shutUp(b):
         isShutUp = False
 
 # decide what to say
+
+
 def talk(word):
     print(word)
     reply = settedAnswer.getAnswer(word)
@@ -152,34 +190,43 @@ def interrupt_callback():
     global interrupted
     return interrupted
 
+class detectorThread (threading.Thread):
+    def run(self):
+        global detector
 
-if len(sys.argv) != 4:
-    print("Error: need to specify 3 model names")
-    print("Usage: python voiceAssistant.py 1st.model 2nd.model 3rd.model")
-    sys.exit(-1)
+        models = ["hixiaohei.pmdl", "xiaoheibizui.pmdl", "xiaoheiquxiao.pmdl"]
+        # capture SIGINT signal, e.g., Ctrl+C
+        # signal.signal(signal.SIGINT, signal_handler)
 
-threads = []
-models = sys.argv[1:]
+        sensitivity = [0.5]*len(models)
+        detector = snowboydecoder.HotwordDetector(models, sensitivity=sensitivity)
+        callbacks = [lambda: start(),
+                    lambda: shutUp(False),
+                    lambda: shutUp(True)]
 
-monitorNet = checkNet()
-monitorNet.start()
+        print('Listening...')
+        # main loop
+        # make sure you have the same numbers of callbacks and models
+        detector.start(detected_callback=callbacks,
+                interrupt_check=interrupt_callback,
+                sleep_time=0.03)
 
-# capture SIGINT signal, e.g., Ctrl+C
-signal.signal(signal.SIGINT, signal_handler)
+    # Detector.terminate()
 
-sensitivity = [0.5]*len(models)
-detector = snowboydecoder.HotwordDetector(models, sensitivity=sensitivity)
-callbacks = [lambda: start(),
-             lambda: shutUp(False),
-             lambda: shutUp(True)]
+if __name__ == '__main__':
+    # detector -> Thread -> detector (pyaudio I/O error fixed)
 
-os.system('play ./resources/dong.wav')
-print('Listening... Press Ctrl+C to exit')
+    if len(sys.argv) != 4:
+        print("Error: need to specify 3 model names")
+        print("Usage: python voiceAssistant.py 1st.model 2nd.model 3rd.model")
+        sys.exit(-1)
 
-# main loop
-# make sure you have the same numbers of callbacks and models
-detector.start(detected_callback=callbacks,
-               interrupt_check=interrupt_callback,
-               sleep_time=0.03)
+    threads = []
 
-detector.terminate()
+    monitorNet = checkNet()
+    monitorNet.start()
+
+    os.system('play ./resources/dong.wav')
+    detector = detectorThread()
+    detector.start()
+    
