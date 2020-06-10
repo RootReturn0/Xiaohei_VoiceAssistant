@@ -1,5 +1,6 @@
 import time
 import os
+import speak_api
 
 CN_NUM = {
     u'〇': 0,
@@ -44,7 +45,7 @@ CN_UNIT = {
 def set_reminder(hour,min,sec):
     period=min*60+hour*60*60+sec
     time.sleep(period)
-    path = "./resource/reminder.wav"
+    path = "./resources/reminder.wav"
     os.system('play ' + path)
 
 
@@ -111,34 +112,37 @@ def cn2dig(cn):
 
 
 def get(word):
-    if word.rfind(r'小时')==-1:
-        hour=0
-        # min = cn2dig(min_key)
-    else:
-        hour_key = word[0:word.rfind(r'小时')]
-        word=word[word.rfind(r'小时')+2:]
-        if hour_key=="半":
-            hour=0.5
+    try:
+        if word.rfind(r'小时')==-1:
+            hour=0
+            # min = cn2dig(min_key)
         else:
-            hour = cn2dig(hour_key)
+            hour_key = word[0:word.rfind(r'小时')]
+            word=word[word.rfind(r'小时')+2:]
+            if hour_key=="半":
+                hour=0.5
+            else:
+                hour = cn2dig(hour_key)
 
-    if word.rfind(r'分钟')==-1:
-        min=0
-    else:
-        min_key=word[0:word.rfind(r'分钟')]
-        word = word[word.rfind(r'分钟') + 2:]
-        min = cn2dig(min_key)
+        if word.rfind(r'分钟')==-1:
+            min=0
+        else:
+            min_key=word[0:word.rfind(r'分钟')]
+            word = word[word.rfind(r'分钟') + 2:]
+            min = cn2dig(min_key)
 
-    if word.rfind(r'秒')==-1:
-        min=0
-    else:
-        sec_key=word[0:word.rfind(r'秒')]
-        sec = cn2dig(sec_key)
+        if word.rfind(r'秒')==-1:
+            min=0
+        else:
+            sec_key=word[0:word.rfind(r'秒')]
+            sec = cn2dig(sec_key)
 
 
-    print(hour,' ',min,' ',sec,'?')
+        print(hour,' ',min,' ',sec,'?')
 
-    set_reminder(hour,min,sec)
+        set_reminder(hour,min,sec)
+    except:
+        speak_api.say('我听不清，你能再说一遍吗')
 
 
 if __name__ == '__main__':
