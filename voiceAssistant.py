@@ -16,6 +16,11 @@ import netCheck
 import baike
 import kill
 
+import get_email
+import play_music
+import reminder
+import get_email
+
 
 isWork = False
 interrupted = False
@@ -44,6 +49,14 @@ class checkNet (threading.Thread):
             global netStatus
             netStatus = netCheck.ping_netCheck()
             time.sleep(1)
+
+# check the emails
+
+
+class checkEmail (threading.Thread):
+    def run(self):
+        get_email.server_mail()
+
 
 # Work after being waked
 
@@ -152,6 +165,10 @@ def talk(word):
     elif '今天天气' in word:
         reply = weather.moji()
         speak_api.say(reply)
+    elif '播放' in word:
+        play_music.get(word)
+    elif '提醒' in word:
+        reminder.get(word)
     else:
         global curTime
         curTime = datetime.datetime.now()
@@ -206,7 +223,12 @@ if __name__ == '__main__':
     monitorNet = checkNet()
     monitorNet.start()
 
+    email = checkEmail()
+    email.start()
+
+
     os.system('play ./resources/dong.wav')
     detector = detectorThread()
     detector.start()
+
     

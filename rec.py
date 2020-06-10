@@ -1,3 +1,10 @@
+'''
+@Author: rootReturn0
+@Date: 2019-06-12 23:16:04
+@LastEditors: rootReturn0
+@LastEditTime: 2020-06-10 23:31:27
+@Description: 
+'''
 import pyaudio
 import wave
 import os
@@ -33,7 +40,7 @@ def rec_fun():
     
     startF = 0
     endF = 0
-    threshold=5000
+    threshold=6000
     while True:
         data = stream.read(CHUNK)
         chunkData = np.frombuffer(data, np.dtype('<i2'))
